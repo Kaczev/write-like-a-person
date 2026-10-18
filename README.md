@@ -2,7 +2,7 @@
 
 给 AI agent 用的写作技能：让生成的文字读起来像人写的，而不是机器写的。
 
-技能本体只有一个文件 `SKILL.md`。它先问三个问题：读者能不能一遍读懂、懂行的人会不会这么说、这篇东西该有哪些段落。然后是十二条具体的坏习惯，每条配一组改前和改后的例子。最后是写完之后的自检清单。例子来自真实的修改记录，不是编出来的示范。
+技能本体是 `SKILL.md`：先问两条（读者能不能一遍读懂、懂行的人会不会这么说），再问这篇东西该有哪些段落，然后是十二条具体的坏习惯，每条配一组通用场景的改前/改后例子，最后是写完之后的自检。`examples/corrections.md` 另放真实修改案例（物理论文、量子科普、口语稿），用来看规则怎么落地，不是模板。
 
 ## 它管什么
 
@@ -41,11 +41,11 @@ git clone https://github.com/Kaczev/write-like-a-person.git "$env:USERPROFILE\sk
 
 目录里没有 `SKILL.md` 的会被跳过，不会报错。路径写错时，技能是静默消失的，所以装完要去技能列表里确认它在。
 
-**别的 agent**：把 `SKILL.md` 复制进那个 agent 的技能目录。它是纯 markdown，frontmatter 只有 `name` 和 `description`。
+**别的 agent**：把 `SKILL.md` 复制进那个 agent 的技能目录；`examples/` 可选，复制过去能让它看到真实案例。它是纯 markdown，frontmatter 只有 `name` 和 `description`。
 
 ## 维护
 
-技能还在改，改动直接落在 `SKILL.md` 上。
+技能还在改，改动落在 `SKILL.md` 和 `examples/corrections.md` 上。
 
 改完这个仓库，Kaz 那边**不会**自动更新。要手动把正文同步进 Kaz 仓库：
 
@@ -54,7 +54,7 @@ cd C:\Users\你\Documents\GitHub\dsh-KazMode
 node scripts/sync-skill.mjs
 ```
 
-`dsh-KazMode` 仓库持有这个文件的一份副本，随预设一起发版。那份副本由 `scripts/sync-skill.mjs` 同步过来，不要直接在 Kaz 那边编辑，否则下一次同步会把它覆盖掉。本机桌面端把 `dsh-kazmode` 链到 Kaz 仓库的 `kaz\`，所以同步完**开一个新会话**就能看到；已经开着的会话保留它启动时的那份。
+`dsh-KazMode` 仓库持有这个文件的一份副本，随预设一起发版。那份副本由 `scripts/sync-skill.mjs` 同步过来（`SKILL.md` 和 `examples/` 都搬），不要直接在 Kaz 那边编辑，否则下一次同步会把它覆盖掉。本机桌面端把 `dsh-kazmode` 链到 Kaz 仓库的 `kaz\`，所以同步完**开一个新会话**就能看到；已经开着的会话保留它启动时的那份。
 
 有些工作区会在 `.agents\skills\` 下另放一份手工副本。那份不在同步链里，而且可能遮住 Kaz 内置的那份。技能调用返回的 base directory 会写明实际加载的是哪一份；发现是工作区副本，就单独更新它，或者删掉它，让内置的那份生效。
 
