@@ -86,7 +86,7 @@ node scripts/sync-skill.mjs
 发版时打 tag，Kaz 那边的同步记录会写下对应的 commit：
 
 ```powershell
-git tag 0.1.0
+git tag 0.1.1
 git push origin main --tags
 ```
 
