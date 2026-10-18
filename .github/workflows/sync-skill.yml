@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the skill
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check for the sync token
         id: token
@@ -37,7 +37,7 @@ jobs:
 
       - name: Check out the Kaz preset
         if: steps.token.outputs.present == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: Kaczev/dsh-KazMode
           token: ${{ secrets.KAZ_SYNC_TOKEN }}
