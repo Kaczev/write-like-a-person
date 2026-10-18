@@ -18,7 +18,7 @@ So every sentence faces two questions:
 
 The first question catches confusion. The second catches imitation. A lot of AI-flavored prose passes the first and fails the second, which is why "make it clearer" does not fix it.
 
-A one-line reply needs these two questions, not the full pass below. The pass is for anything you draft as a document or deliver as finished prose.
+A one-line reply needs these two questions, not the occasion worksheet or the full pass below. Those are for anything you draft as a document or deliver as finished prose.
 
 ## Before the first sentence: what is this piece?
 
