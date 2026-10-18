@@ -47,7 +47,20 @@ git clone https://github.com/Kaczev/write-like-a-person.git "$env:USERPROFILE\sk
 
 技能还在改，改动落在 `SKILL.md` 和 `examples/corrections.md` 上。
 
-改完这个仓库，Kaz 那边**不会**自动更新。要手动把正文同步进 Kaz 仓库：
+### 自动同步（推荐）
+
+`.github/workflows/sync-skill.yml` 会在 push 到 `main`、且改到 `SKILL.md` 或 `examples/**` 时，把正文同步进 `Kaczev/dsh-KazMode` 并提交。第一次用要建一个 secret：
+
+1. GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token。
+2. Repository access 选 Only select repositories → `dsh-KazMode`；Repository permissions 只给 `Contents: Read and write`。
+3. 生成后复制，去 `write-like-a-person` 仓库的 Settings → Secrets and variables → Actions → New repository secret，名字填 `KAZ_SYNC_TOKEN`，值贴进去。不要把 token 贴进聊天或提交进仓库。
+4. 去 Actions → Sync write-like-a-person → Run workflow 手动跑一次，确认它 push 成功。之后 push `SKILL.md` 或 `examples/**` 就会自动同步。
+
+PAT 会过期；过期后 workflow 会红，续一个、更新 secret 即可。这个 workflow 只改 GitHub 上的 Kaz 仓库，不改你本机的 Kaz 工作区；本机要 `git pull`，桌面端开新会话才会看到新副本。
+
+### 手动同步
+
+没配 secret、或者想立刻同步，还是跑：
 
 ```powershell
 cd C:\Users\你\Documents\GitHub\dsh-KazMode
