@@ -1,3 +1,5 @@
+# 日常入口：push 到 main 且改到 SKILL.md / examples/**。
+# workflow_dispatch 只用于测试或补跑，不是日常入口。
 name: Sync write-like-a-person
 
 on:

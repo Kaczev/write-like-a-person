@@ -47,29 +47,41 @@ git clone https://github.com/Kaczev/write-like-a-person.git "$env:USERPROFILE\sk
 
 技能还在改，改动落在 `SKILL.md` 和 `examples/corrections.md` 上。
 
-### 自动同步（推荐）
+### 同步：push 就会自动跑
 
-`.github/workflows/sync-skill.yml` 会在 push 到 `main`、且改到 `SKILL.md` 或 `examples/**` 时，把正文同步进 `Kaczev/dsh-KazMode` 并提交。第一次用要建一个 secret：
+日常只有一个方法：把 `SKILL.md` 或 `examples/**` 的改动 push 到 `main`。`.github/workflows/sync-skill.yml` 会自动：
+
+1. checkout 本仓库和 `Kaczev/dsh-KazMode`；
+2. 跑 `node scripts/sync-skill.mjs --from "$GITHUB_WORKSPACE"`；
+3. 有变化就 commit + push 到 Kaz 的 `main`。
+
+不用去 Actions 页面点 `Run workflow`；那个按钮只用于测试或补跑。触发条件是 push 到 `main` 且改到 `SKILL.md` 或 `examples/**`；只改 README 不会触发。
+
+第一次要配 `KAZ_SYNC_TOKEN`（fine-grained PAT，只给 `dsh-KazMode` 的 `Contents: Read and write`）：
 
 1. GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token。
 2. Repository access 选 Only select repositories → `dsh-KazMode`；Repository permissions 只给 `Contents: Read and write`。
 3. 生成后复制，去 `write-like-a-person` 仓库的 Settings → Secrets and variables → Actions → New repository secret，名字填 `KAZ_SYNC_TOKEN`，值贴进去。不要把 token 贴进聊天或提交进仓库。
-4. 去 Actions → Sync write-like-a-person → Run workflow 手动跑一次，确认它 push 成功。之后 push `SKILL.md` 或 `examples/**` 就会自动同步。
+4. 配好后在 Actions 页面点一次 `Run workflow` 做首次验收；之后就靠 push，不用再点。
 
-PAT 会过期；过期后 workflow 会红，续一个、更新 secret 即可。这个 workflow 只改 GitHub 上的 Kaz 仓库，不改你本机的 Kaz 工作区；本机要 `git pull`，桌面端开新会话才会看到新副本。
+PAT 会过期；过期后 workflow 会红，续一个、更新 secret 即可。
 
-### 手动同步
+### 本机 Kaz
 
-没配 secret、或者想立刻同步，还是跑：
+workflow 只改 GitHub 上的 Kaz 仓库。本机 Kaz 仓库 `git pull`，桌面端开新会话；已经开着的会话保留启动时的那份。
+
+`dsh-KazMode` 仓库持有这个文件的一份副本，随预设一起发版。那份副本由 `scripts/sync-skill.mjs` 同步过来（`SKILL.md` 和 `examples/` 都搬），不要直接在 Kaz 那边编辑，否则下一次同步会把它覆盖掉。
+
+有些工作区会在 `.agents\skills\` 下另放一份手工副本。那份不在同步链里，而且可能遮住 Kaz 内置的那份。要让“一个方法”成立，最好删掉它，让工作区直接用 Kaz 的副本；至少要知道技能调用返回的 base directory 是哪一份。
+
+### 备用：workflow 坏了才手动跑
 
 ```powershell
 cd C:\Users\你\Documents\GitHub\dsh-KazMode
 node scripts/sync-skill.mjs
 ```
 
-`dsh-KazMode` 仓库持有这个文件的一份副本，随预设一起发版。那份副本由 `scripts/sync-skill.mjs` 同步过来（`SKILL.md` 和 `examples/` 都搬），不要直接在 Kaz 那边编辑，否则下一次同步会把它覆盖掉。本机桌面端把 `dsh-kazmode` 链到 Kaz 仓库的 `kaz\`，所以同步完**开一个新会话**就能看到；已经开着的会话保留它启动时的那份。
-
-有些工作区会在 `.agents\skills\` 下另放一份手工副本。那份不在同步链里，而且可能遮住 Kaz 内置的那份。技能调用返回的 base directory 会写明实际加载的是哪一份；发现是工作区副本，就单独更新它，或者删掉它，让内置的那份生效。
+手动跑完先 commit，别和 workflow 同时跑；两边都会写 `SOURCE.json`，虽然现在的脚本会把 commit 记成同一个正文提交，但没必要制造一次竞态。
 
 发版时打 tag，Kaz 那边的同步记录会写下对应的 commit：
 
