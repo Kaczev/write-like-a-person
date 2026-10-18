@@ -2,7 +2,7 @@
 
 给 AI agent 用的写作技能：让生成的文字读起来像人写的，而不是机器写的。
 
-技能本体是 `SKILL.md`：先问两条（读者能不能一遍读懂、懂行的人会不会这么说），再问这篇东西该有哪些段落，然后是十二条具体的坏习惯，每条配一组通用场景的改前/改后例子，最后是写完之后的自检。`examples/corrections.md` 另放真实修改案例（物理论文、量子科普、口语稿），用来看规则怎么落地，不是模板。
+技能本体是 `SKILL.md`：先问两条（读者能不能一遍读懂、懂行的人会不会这么说），再问这篇东西该有哪些段落、它的动作顺序是不是 AI 模板，然后是十二条具体的坏习惯，每条配一组通用场景的改前/改后例子，最后是写完之后的自检。
 
 ## 它管什么
 
@@ -41,21 +41,21 @@ git clone https://github.com/Kaczev/write-like-a-person.git "$env:USERPROFILE\sk
 
 目录里没有 `SKILL.md` 的会被跳过，不会报错。路径写错时，技能是静默消失的，所以装完要去技能列表里确认它在。
 
-**别的 agent**：把 `SKILL.md` 复制进那个 agent 的技能目录；`examples/` 可选，复制过去能让它看到真实案例。它是纯 markdown，frontmatter 只有 `name` 和 `description`。
+**别的 agent**：把 `SKILL.md` 复制进那个 agent 的技能目录。它是纯 markdown，frontmatter 只有 `name` 和 `description`。
 
 ## 维护
 
-技能还在改，改动落在 `SKILL.md` 和 `examples/corrections.md` 上。
+技能还在改，改动落在 `SKILL.md` 上。
 
 ### 同步：push 就会自动跑
 
-日常只有一个方法：把 `SKILL.md` 或 `examples/**` 的改动 push 到 `main`。`.github/workflows/sync-skill.yml` 会自动：
+日常只有一个方法：把 `SKILL.md` 的改动 push 到 `main`。`.github/workflows/sync-skill.yml` 会自动：
 
 1. checkout 本仓库和 `Kaczev/dsh-KazMode`；
 2. 跑 `node scripts/sync-skill.mjs --from "$GITHUB_WORKSPACE"`；
 3. 有变化就 commit + push 到 Kaz 的 `main`。
 
-不用去 Actions 页面点 `Run workflow`；那个按钮只用于测试或补跑。触发条件是 push 到 `main` 且改到 `SKILL.md` 或 `examples/**`；只改 README 不会触发。
+不用去 Actions 页面点 `Run workflow`；那个按钮只用于测试或补跑。触发条件是 push 到 `main` 且改到 `SKILL.md`；只改 README 不会触发。
 
 第一次要配 `KAZ_SYNC_TOKEN`（fine-grained PAT，只给 `dsh-KazMode` 的 `Contents: Read and write`）：
 
@@ -70,7 +70,7 @@ PAT 会过期；过期后 workflow 会红，续一个、更新 secret 即可。
 
 workflow 只改 GitHub 上的 Kaz 仓库。本机 Kaz 仓库 `git pull`，桌面端开新会话；已经开着的会话保留启动时的那份。
 
-`dsh-KazMode` 仓库持有这个文件的一份副本，随预设一起发版。那份副本由 `scripts/sync-skill.mjs` 同步过来（`SKILL.md` 和 `examples/` 都搬），不要直接在 Kaz 那边编辑，否则下一次同步会把它覆盖掉。
+`dsh-KazMode` 仓库持有这个文件的一份副本，随预设一起发版。那份副本由 `scripts/sync-skill.mjs` 同步过来（只搬 `SKILL.md`），不要直接在 Kaz 那边编辑，否则下一次同步会把它覆盖掉。
 
 有些工作区会在 `.agents\skills\` 下另放一份手工副本。那份不在同步链里，而且可能遮住 Kaz 内置的那份。要让“一个方法”成立，最好删掉它，让工作区直接用 Kaz 的副本；至少要知道技能调用返回的 base directory 是哪一份。
 
@@ -86,7 +86,7 @@ node scripts/sync-skill.mjs
 发版时打 tag，Kaz 那边的同步记录会写下对应的 commit：
 
 ```powershell
-git tag 0.1.1
+git tag 0.1.2
 git push origin main --tags
 ```
 
